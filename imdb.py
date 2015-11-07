@@ -112,12 +112,14 @@ class IMDb(BotPlugin):
         movie = imdb.get_title_by_id(movie_id)
 
         # Title (year), Plot: ..., Release: xxxx-xx-xx, imdb-url
-        response = '{0} ({1}), Plot: {2} Released: {3}, {4}'.format(
+        response = '{0} ({1}), Plot: {2} Released: {3}, {4}, {5}'.format(
             movie.title,
             movie.year,
             movie.plot_outline,
             movie.release_date,
             'http://www.imdb.com/title/{0}/'.format(movie.imdb_id),
+            movie.rating,
+
         )
 
         self.send(msg.frm,
