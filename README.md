@@ -10,7 +10,7 @@ pip install imdbpie
 Installation
 ---
 ```
-!repos install https://github.com/sijis/err-imdb.git
+!repos install https://github.com/fernand0/err-imdb.git
 ```
 
 Usage
@@ -19,5 +19,6 @@ Simple example usage
 
 ```
 !imdb The Dark Knight
+!imdbf The Dark Kinght
 !imdb movie tt0468569
 ```
