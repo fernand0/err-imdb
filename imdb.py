@@ -47,20 +47,61 @@ class IMDb(BotPlugin):
 
         return imdb
 
-    def _parse_movie_results(self, results):
+    def _parse_movie_results(self, results, more=""):
         response = []
         count = 1
         for result in results:
             # X. Title (year) / <code>
-            response.append('{0}. {1} ({2}/{3})'.format(
+            if more:
+                imdb = self._connect()
+                movie = imdb.get_title_by_id(result['imdb_id'])
+                if len(movie.cast_summary)==0:
+                    name=""
+                else:
+                    name=movie.cast_summary[0].name
+                response.append('{0}. {1} {4} ({2}/{3})'.format(
+                count,
+                result['title'],
+                result['year'],
+                movie.rating,
+                name,
+                ))
+            else:
+                response.append('{0}. {1} ({2}/{3})'.format(
                 count,
                 result['title'],
                 result['year'],
                 result['imdb_id'],
-                )
-            )
+                ))
             count = count + 1
         return ' '.join(response)
+
+    @botcmd
+    def imdbf(self, msg, args):
+        ''' Search for movie titles
+            Example:
+            !imdb The Dark Knight
+        '''
+        imdb = self._connect()
+        results_to_return = 5
+
+        results = imdb.search_for_title(args)
+        results_total = len(results)
+
+        if results_total == 0:
+            self.send(msg.frm,
+                      'No results for "{0}" found.'.format(args),
+                      message_type=msg.type,
+                      in_reply_to=msg,
+                      groupchat_nick_reply=True)
+            return
+
+        movies = self._parse_movie_results(results[:results_to_return],"full")
+        self.send(msg.frm,
+                  '{0}'.format(movies),
+                  message_type=msg.type,
+                  in_reply_to=msg,
+                  groupchat_nick_reply=True)    
 
     @botcmd
     def imdb(self, msg, args):
