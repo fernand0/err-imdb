@@ -50,6 +50,7 @@ class IMDb(BotPlugin):
     def _parse_movie_results(self, results, more=""):
         response = []
         count = 1
+        response.append('Results:\n')
         for result in results:
             # X. Title (year) / <code>
             if more:
@@ -59,7 +60,7 @@ class IMDb(BotPlugin):
                     name=""
                 else:
                     name=movie.cast_summary[0].name
-                response.append('{0}. {1} {4} ({2}/{3})'.format(
+                response.append('{0}. {1} - {4} ({2}/{3})\n'.format(
                 count,
                 result['title'],
                 result['year'],
@@ -74,7 +75,8 @@ class IMDb(BotPlugin):
                 result['imdb_id'],
                 ))
             count = count + 1
-        return ' '.join(response)
+        logging.debug(response)
+        return ''.join(response)
 
     @botcmd
     def imdbf(self, msg, args):
@@ -97,9 +99,10 @@ class IMDb(BotPlugin):
             return
 
         movies = self._parse_movie_results(results[:results_to_return],"full")
+        logging.debug(movies)
         self.send(msg.frm,
                   '{0}'.format(movies),
-                  message_type=msg.type,
+                  #message_type=msg.is_direct,
                   in_reply_to=msg,
                   groupchat_nick_reply=True)    
 
