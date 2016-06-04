@@ -85,7 +85,7 @@ class IMDb(BotPlugin):
             !imdb The Dark Knight
         '''
         imdb = self._connect()
-        results_to_return = 5
+        results_to_return = 8
 
         results = imdb.search_for_title(args)
         results_total = len(results)
