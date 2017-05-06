@@ -1,10 +1,10 @@
-from errbot import botplugin, botcmd
+from errbot import BotPlugin, botcmd
 import logging
 
 #log = logging.getlogger(name='errbot.plugins.imdb')
 
 try:
-    from imdbpie import imdb
+    from imdbpie import Imdb
 except:
     log.error("please install 'imdbpie' python package")
 
@@ -14,8 +14,8 @@ class imdb(BotPlugin):
     def get_configuration_template(self):
         """ configuration entries """
         config = {
-            'anonymize': false,
-            'cache': false,
+            'anonymize': False,
+            'cache': False,
             'cache_dir': u'/tmp/imdbpiecache',
         }
         return config
@@ -23,23 +23,23 @@ class imdb(BotPlugin):
     def _check_config(self, option):
 
         # if no config, return nothing
-        if self.config is none:
-            return none
+        if self.config is None:
+            return None
         else:
             # now, let's validate the key
             if option in self.config:
                 return self.config[option]
             else:
-                return none
+                return None
 
     def _connect(self):
         """ connection to imdb """
 
-        anonymize = self._check_config('anonymize') or false
-        cache = self._check_config('cache') or false
+        anonymize = self._check_config('anonymize') or False
+        cache = self._check_config('cache') or False
         cache_dir = self._check_config('cache_dir') or '/tmp/imdbpiecache'
 
-        imdb = imdb({
+        imdb = Imdb({
                     'anonymize': anonymize,
                     'cache': cache,
                     'cache_dir': cache_dir,
@@ -82,7 +82,7 @@ class imdb(BotPlugin):
     def imdbf(self, msg, args):
         ''' Search for movie titles
             Example:
-            !imdb The Dark Knight
+            !imdbf The Dark Knight
         '''
         imdb = self._connect()
         results_to_return = 8
@@ -96,6 +96,10 @@ class imdb(BotPlugin):
                       #message_type=msg.type,
                       in_reply_to=msg,
                       groupchat_nick_reply=True)
+            self.send(msg.frm,
+                     'END'.format(''),
+                     in_reply_to=msg,
+                     groupchat_nick_reply=True)    
             return
 
         movies = self._parse_movie_results(results[:results_to_return],"full")
@@ -104,9 +108,8 @@ class imdb(BotPlugin):
                   '{0}'.format(movies),
                   in_reply_to=msg,
                   groupchat_nick_reply=True)    
-
         self.send(msg.frm,
-                  'END',
+                  'END'.format(''),
                   in_reply_to=msg,
                   groupchat_nick_reply=True)    
 
@@ -128,7 +131,12 @@ class imdb(BotPlugin):
                       #message_type=msg.type,
                       in_reply_to=msg,
                       groupchat_nick_reply=True)
+            self.send(msg.frm,
+                     'END'.format(''),
+                     in_reply_to=msg,
+                     groupchat_nick_reply=True)    
             return
+
 
         movies = self._parse_movie_results(results[:results_to_return])
         self.send(msg.frm,
@@ -136,6 +144,10 @@ class imdb(BotPlugin):
                   #message_type=msg.type,
                   in_reply_to=msg,
                   groupchat_nick_reply=True)
+        self.send(msg.frm,
+                  'END'.format(''),
+                  in_reply_to=msg,
+                  groupchat_nick_reply=True)    
 
     @botcmd
     def imdb_movie(self, msg, args):
@@ -155,7 +167,11 @@ class imdb(BotPlugin):
                       #message_type=msg.type,
                       in_reply_to=msg,
                       groupchat_nick_reply=True)
-            return
+            self.send(msg.frm,
+                     'END'.format(''),
+                     in_reply_to=msg,
+                     groupchat_nick_reply=True)    
+           return
 
         movie = imdb.get_title_by_id(movie_id)
 
@@ -175,3 +191,8 @@ class imdb(BotPlugin):
                   #message_type=msg.type,
                   in_reply_to=msg,
                   groupchat_nick_reply=True)
+        self.send(msg.frm,
+                  'END'.format(''),
+                  in_reply_to=msg,
+                  groupchat_nick_reply=True)    
+
