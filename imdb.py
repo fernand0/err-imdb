@@ -1,21 +1,21 @@
-from errbot import BotPlugin, botcmd
+from errbot import botplugin, botcmd
 import logging
 
-log = logging.getLogger(name='errbot.plugins.Imdb')
+#log = logging.getlogger(name='errbot.plugins.imdb')
 
 try:
-    from imdbpie import Imdb
-except ImportError:
-    log.error("Please install 'imdbpie' python package")
+    from imdbpie import imdb
+except:
+    log.error("please install 'imdbpie' python package")
 
 
-class IMDb(BotPlugin):
+class imdb(BotPlugin):
 
     def get_configuration_template(self):
         """ configuration entries """
         config = {
-            'anonymize': False,
-            'cache': False,
+            'anonymize': false,
+            'cache': false,
             'cache_dir': u'/tmp/imdbpiecache',
         }
         return config
@@ -23,23 +23,23 @@ class IMDb(BotPlugin):
     def _check_config(self, option):
 
         # if no config, return nothing
-        if self.config is None:
-            return None
+        if self.config is none:
+            return none
         else:
             # now, let's validate the key
             if option in self.config:
                 return self.config[option]
             else:
-                return None
+                return none
 
     def _connect(self):
         """ connection to imdb """
 
-        anonymize = self._check_config('anonymize') or False
-        cache = self._check_config('cache') or False
+        anonymize = self._check_config('anonymize') or false
+        cache = self._check_config('cache') or false
         cache_dir = self._check_config('cache_dir') or '/tmp/imdbpiecache'
 
-        imdb = Imdb({
+        imdb = imdb({
                     'anonymize': anonymize,
                     'cache': cache,
                     'cache_dir': cache_dir,
@@ -51,7 +51,7 @@ class IMDb(BotPlugin):
         response = []
         count = 1
         for result in results:
-            # X. Title (year) / <code>
+            # x. title (year) / <code>
             if more:
                 imdb = self._connect()
                 movie = imdb.get_title_by_id(result['imdb_id'])
@@ -91,7 +91,7 @@ class IMDb(BotPlugin):
         if results_total == 0:
             self.send(msg.frm,
                       'No results for "{0}" found.'.format(args),
-                      message_type=msg.type,
+                      #message_type=msg.type,
                       in_reply_to=msg,
                       groupchat_nick_reply=True)
             return
@@ -99,7 +99,13 @@ class IMDb(BotPlugin):
         movies = self._parse_movie_results(results[:results_to_return],"full")
         self.send(msg.frm,
                   '{0}'.format(movies),
-                  message_type=msg.type,
+                  #message_type=msg.type,
+                  in_reply_to=msg,
+                  groupchat_nick_reply=True)    
+
+        self.send(msg.frm,
+                  'END',
+                  #message_type=msg.type,
                   in_reply_to=msg,
                   groupchat_nick_reply=True)    
 
@@ -118,7 +124,7 @@ class IMDb(BotPlugin):
         if results_total == 0:
             self.send(msg.frm,
                       'No results for "{0}" found.'.format(args),
-                      message_type=msg.type,
+                      #message_type=msg.type,
                       in_reply_to=msg,
                       groupchat_nick_reply=True)
             return
@@ -126,7 +132,7 @@ class IMDb(BotPlugin):
         movies = self._parse_movie_results(results[:results_to_return])
         self.send(msg.frm,
                   '{0}'.format(movies),
-                  message_type=msg.type,
+                  #message_type=msg.type,
                   in_reply_to=msg,
                   groupchat_nick_reply=True)
 
@@ -145,7 +151,7 @@ class IMDb(BotPlugin):
         except:    
             self.send(msg.frm,
                       'Movie id ({0}) not valid.'.format(movie_id),
-                      message_type=msg.type,
+                      #message_type=msg.type,
                       in_reply_to=msg,
                       groupchat_nick_reply=True)
             return
@@ -165,6 +171,6 @@ class IMDb(BotPlugin):
 
         self.send(msg.frm,
                   response,
-                  message_type=msg.type,
+                  #message_type=msg.type,
                   in_reply_to=msg,
                   groupchat_nick_reply=True)
